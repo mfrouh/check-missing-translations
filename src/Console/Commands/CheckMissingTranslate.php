@@ -40,9 +40,7 @@ class CheckMissingTranslate extends Command
         $array     = [];
 
         $directory =  $this->option('directory') ? app()->basePath() . '/' . $this->option('directory') : app()->basePath();
-        $pattern1 = '/__\(([\w. \']+)\)/';
-        $pattern2 = '/@lang\(([\w. \']+)\)/';
-        $pattern3 = '/trans\(([\w. \']+)\)/';
+        $pattern = "/(@lang\(([\w. \']+)\)|__\(([\w. \']+)\)|trans\(([\w. \']+)\))/";
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
@@ -51,8 +49,13 @@ class CheckMissingTranslate extends Command
         foreach ($files as $file) {
             if ($file->isFile() && $file->getExtension() === 'php' && !str_contains($file->getPathname(), app()->basePath() . '\vendor') && !str_contains($file->getPathname(), app()->basePath() . '\storage')) {
                 $content = file_get_contents($file->getPathname());
-                if (preg_match_all($pattern1, $content, $matches) || preg_match_all($pattern2, $content, $matches) || preg_match_all($pattern3, $content, $matches)) {
-                    foreach ($matches[1] as $match) {
+                preg_match_all($pattern, $content, $matches);
+                $matches = array_merge(...$matches);
+                $matches = array_filter($matches, function ($match) {
+                    return !empty($match) && !str_contains($match, '__(') && !str_contains($match, '@lang(') && !str_contains($match, 'trans(');
+                });
+                if ($matches) {
+                    foreach ($matches as $match) {
                         $is_json =  str_contains($match, '.') ? false : true;
                         $fileName =  explode('.', str_replace("'", '', $match))[0];
                         $key      = str_replace($fileName . '.', '', str_replace("'", '', $match));
