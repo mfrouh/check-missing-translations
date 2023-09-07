@@ -38,18 +38,18 @@ class CheckMissingTranslate extends Command
     public function handle()
     {
         $array     = [];
-        $directory =  app()->basePath() . '/' . $this->option('directory') ?: app()->basePath() . '/app';
 
+        $directory =  $this->option('directory') ? app()->basePath() . '/' . $this->option('directory') : app()->basePath();
         $pattern1 = '/__\(([\w. \']+)\)/';
         $pattern2 = '/@lang\(([\w. \']+)\)/';
         $pattern3 = '/trans\(([\w. \']+)\)/';
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
-        
+
         $languages = $this->getLanguages();
         foreach ($files as $file) {
-            if ($file->isFile() && $file->getExtension() === 'php' && !str_contains($file->getPathname(), 'vendor/') && !str_contains($file->getPathname(), 'storage/framework')) {
+            if ($file->isFile() && $file->getExtension() === 'php' && !str_contains($file->getPathname(), app()->basePath() . '\vendor') && !str_contains($file->getPathname(), app()->basePath() . '\storage')) {
                 $content = file_get_contents($file->getPathname());
                 if (preg_match_all($pattern1, $content, $matches) || preg_match_all($pattern2, $content, $matches) || preg_match_all($pattern3, $content, $matches)) {
                     foreach ($matches[1] as $match) {
@@ -59,7 +59,7 @@ class CheckMissingTranslate extends Command
                         foreach ($languages as $language) {
                             $langFile = (!$is_json) ? './resources/lang/' . $language . '/' . $fileName . '.php' : './resources/lang/' . $language . '.json';
                             $langArray       = file_exists($langFile) ? include $langFile : [];
-                            $pathName        =  str_replace($directory, '', $file->getPathname());
+                            $pathName        = str_replace($directory . '\\', '', $file->getPathname());
                             $match           = str_replace("'", '', $match);
                             $checkValidation = file_exists($langFile) ? (!array_key_exists($key, $langArray) ? true : false) : true;
 
