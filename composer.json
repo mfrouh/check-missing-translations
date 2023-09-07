@@ -1,0 +1,26 @@
+{
+    "name": "mfrouh/check-missing-translations",
+    "description": "Checks if all translations are there for all languages",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MFrouh\\CheckMissingTranslations\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mfrouh",
+            "email": "mohamedfrouh96@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MFrouh\\CheckMissingTranslations\\CheckMissingTranslationServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}
