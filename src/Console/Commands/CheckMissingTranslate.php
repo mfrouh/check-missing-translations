@@ -47,7 +47,12 @@ class CheckMissingTranslate extends Command
 
         $languages = $this->getLanguages();
         foreach ($files as $file) {
-            if ($file->isFile() && $file->getExtension() === 'php' && !str_contains($file->getPathname(), app()->basePath() . '\vendor') && !str_contains($file->getPathname(), app()->basePath() . '\storage')) {
+            if ($file->isFile() && $file->getExtension() === 'php' && 
+              !str_contains($file->getPathname(), app()->basePath() . '\vendor') && 
+              !str_contains($file->getPathname(), app()->basePath() . '\storage')&&
+              !str_contains($file->getPathname(), app()->basePath() . '/vendor') &&
+              !str_contains($file->getPathname(), app()->basePath() . '/storage') 
+              ) {
                 $content = file_get_contents($file->getPathname());
                 preg_match_all($pattern, $content, $matches);
                 $matches = array_merge(...$matches);
