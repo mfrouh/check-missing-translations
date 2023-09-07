@@ -19,3 +19,6 @@ Use this command to check files only in a specific directory
 ```bash
 php artisan check-translate --directory=app/Http/Controllers
 ```
+
+### Example
+![Example](/example.png)
