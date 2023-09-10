@@ -67,7 +67,7 @@ class CheckMissingTranslate extends Command
                         foreach ($languages as $language) {
                             $langFile = (!$is_json) ? './resources/lang/' . $language . '/' . $fileName . '.php' : './resources/lang/' . $language . '.json';
                             $langArray       = file_exists($langFile) ? include $langFile : [];
-                            $pathName        = str_replace($directory . '\\', '', $file->getPathname());
+                            $pathName        = str_replace($directory.'/','',str_replace($directory.'\\' , '', $file->getPathname()));
                             $match           = str_replace("'", '', $match);
                             $checkValidation = file_exists($langFile) ? (!array_key_exists($key, $langArray) ? true : false) : true;
 
