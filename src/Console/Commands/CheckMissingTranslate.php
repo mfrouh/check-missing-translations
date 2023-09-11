@@ -69,7 +69,8 @@ class CheckMissingTranslate extends Command
                             $langArray       = file_exists($langFile) ? include $langFile : [];
                             $pathName        = str_replace($directory.'/','',str_replace($directory.'\\' , '', $file->getPathname()));
                             $match           = str_replace("'", '', $match);
-                            $checkValidation = file_exists($langFile) ? (!array_key_exists($key, $langArray) ? true : false) : true;
+                            $checkKey = str_replace('\\', '', $key);
+                            $checkValidation = file_exists($langFile) ? (!array_key_exists($checkKey, $langArray) ? true : false) : true;
 
                             if ($checkValidation) {
                                 $array[] = [
