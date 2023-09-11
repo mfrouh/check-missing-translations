@@ -40,7 +40,7 @@ class CheckMissingTranslate extends Command
         $array     = [];
 
         $directory =  $this->option('directory') ? app()->basePath() . '/' . $this->option('directory') : app()->basePath();
-        $pattern = "/(@lang\(([\w. \']+)\)|__\(([\w. \']+)\)|trans\(([\w. \']+)\))/";
+        $pattern = "/(@lang\(([\w. \\\']+)\)|__\(([\w. \\\']+)\)|trans\(([\w. \\\']+)\))/";
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
@@ -63,7 +63,7 @@ class CheckMissingTranslate extends Command
                     foreach ($matches as $match) {
                         $is_json =  str_contains($match, '.') ? false : true;
                         $fileName =  explode('.', str_replace("'", '', $match))[0];
-                        $key      = str_replace($fileName . '.', '', str_replace("'", '', $match));
+                        $key      = str_replace($fileName . '.', '', trim(ltrim($match,"'"),"'"));
                         foreach ($languages as $language) {
                             $langFile = (!$is_json) ? './resources/lang/' . $language . '/' . $fileName . '.php' : './resources/lang/' . $language . '.json';
                             $langArray       = file_exists($langFile) ? include $langFile : [];
